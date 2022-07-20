@@ -1,5 +1,7 @@
 const express = require('express');
-const cors = require('cors')
+
+const cors = require('cors');
+const { dbConection } = require('../database/config');
 
 class Server{
 
@@ -7,11 +9,20 @@ class Server{
     this.app = express();
     this.port = process.env.PORT;
     this.usuariosPath = '/api/users'
+
+    //Conectar a base de datos
+    this.conectarDB();
+
     //Midlewears: Fucnion que siempre se va a ejecutar cuando levantemos el servidor
     this.middlewears();
+
     //Rutas de mi app
     this.routes();
     this.listen();
+    }
+
+    async conectarDB (){
+        await dbConection();
     }
 
     middlewears() {
@@ -25,7 +36,6 @@ class Server{
         this.app.use(express.static('public'));
     }
 
-
     routes(){
        this.app.use(this.usuariosPath, require('../routes/user'));
     }
@@ -35,7 +45,6 @@ class Server{
             console.log('Servidor corriendo en puerto', this.port);
         });
     }
-
 }
 
 
